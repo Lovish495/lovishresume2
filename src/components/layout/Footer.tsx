@@ -17,10 +17,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Mail, href: "mailto:contact@lovishsinghal.in", label: "Email" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/calovishsinghal/", label: "LinkedIn" },
+  { icon: Instagram, href: "https://www.instagram.com/lovishsinghal0/", label: "Instagram" },
+  { icon: Mail, href: "mailto:Lovishsinghal@gmail.com", label: "Email" },
 ];
 
 export function Footer() {
@@ -84,18 +83,18 @@ export function Footer() {
             <h4 className="mb-4 font-heading text-lg font-semibold">Let's Connect</h4>
             <div className="space-y-3">
               <a
-                href="mailto:contact@lovishsinghal.in"
+                href="mailto:Lovishsinghal@gmail.com"
                 className="flex items-center gap-2 text-sm text-primary-foreground/80 transition-colors hover:text-secondary"
               >
                 <Mail className="h-4 w-4" />
-                contact@lovishsinghal.in
+                Lovishsinghal@gmail.com
               </a>
               <a
-                href="tel:+919999999999"
+                href="tel:+918504899720"
                 className="flex items-center gap-2 text-sm text-primary-foreground/80 transition-colors hover:text-secondary"
               >
                 <Phone className="h-4 w-4" />
-                +91 99999 99999
+                +91 85048 99720
               </a>
             </div>
             <div className="mt-4 flex gap-3">

@@ -10,27 +10,26 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "contact@lovishsinghal.in",
-    href: "mailto:contact@lovishsinghal.in",
+    value: "Lovishsinghal@gmail.com",
+    href: "mailto:Lovishsinghal@gmail.com",
   },
   {
     icon: Phone,
     label: "Phone",
-    value: "+91 99999 99999",
-    href: "tel:+919999999999",
+    value: "+91 85048 99720",
+    href: "tel:+918504899720",
   },
   {
     icon: MapPin,
     label: "Location",
-    value: "Delhi, India",
+    value: "India",
     href: null,
   },
 ];
 
 const socialLinks = [
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn", color: "hover:bg-blue-600" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube", color: "hover:bg-red-600" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram", color: "hover:bg-pink-600" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/calovishsinghal/", label: "LinkedIn", color: "hover:bg-blue-600" },
+  { icon: Instagram, href: "https://www.instagram.com/lovishsinghal0/", label: "Instagram", color: "hover:bg-pink-600" },
 ];
 
 const Contact = () => {

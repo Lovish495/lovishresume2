@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,25 +24,49 @@ const navItems = [
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-      <div className="container flex h-16 items-center justify-between">
+    <header 
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-300",
+        scrolled 
+          ? "border-b border-border/50 bg-background/95 shadow-lg backdrop-blur-xl" 
+          : "bg-transparent"
+      )}
+    >
+      <div className="container flex h-16 items-center justify-between px-4 sm:h-18 lg:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <span className="font-heading text-lg font-bold text-primary-foreground">L</span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className={cn(
+            "flex h-10 w-10 items-center justify-center rounded-xl font-bold text-lg transition-all duration-300",
+            scrolled 
+              ? "bg-primary text-primary-foreground" 
+              : "bg-white/20 text-white backdrop-blur-sm"
+          )}>
+            L
           </div>
-          <span className="font-heading text-xl font-semibold text-foreground">
+          <span className={cn(
+            "text-lg font-bold transition-colors duration-300 sm:text-xl",
+            scrolled ? "text-foreground" : "text-white"
+          )}>
             Lovish Singhal
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
             <div
               key={item.label}
@@ -53,10 +77,14 @@ export function Navbar() {
               <Link
                 to={item.href}
                 className={cn(
-                  "flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors",
-                  isActive(item.href)
-                    ? "bg-muted text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  "flex items-center gap-1 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                  scrolled
+                    ? isActive(item.href)
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    : isActive(item.href)
+                      ? "bg-white/20 text-white"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
                 )}
               >
                 {item.label}
@@ -65,12 +93,12 @@ export function Navbar() {
 
               {/* Dropdown */}
               {item.children && activeDropdown === item.label && (
-                <div className="absolute left-0 top-full min-w-48 animate-fade-in rounded-lg border bg-card p-2 shadow-card">
+                <div className="absolute left-0 top-full min-w-[200px] animate-fade-in rounded-xl border border-border bg-card p-2 shadow-xl">
                   {item.children.map((child) => (
                     <Link
                       key={child.label}
                       to={child.href}
-                      className="block rounded-md px-4 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      className="block rounded-lg px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     >
                       {child.label}
                     </Link>
@@ -81,9 +109,13 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
-          <Button variant="hero" size="sm" asChild>
+        {/* CTA Button - Desktop */}
+        <div className="hidden lg:block">
+          <Button 
+            variant={scrolled ? "default" : "heroOutline"} 
+            size="sm" 
+            asChild
+          >
             <Link to="/contact">Get in Touch</Link>
           </Button>
         </div>
@@ -92,16 +124,19 @@ export function Navbar() {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden"
+          className={cn(
+            "lg:hidden",
+            !scrolled && "text-white hover:bg-white/10"
+          )}
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </Button>
       </div>
 
       {/* Mobile Navigation */}
       {isOpen && (
-        <div className="border-t bg-background p-4 md:hidden">
+        <div className="border-t border-border bg-background p-4 lg:hidden">
           <nav className="flex flex-col gap-2">
             {navItems.map((item) => (
               <div key={item.label}>
@@ -109,7 +144,7 @@ export function Navbar() {
                   to={item.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "block rounded-lg px-4 py-3 text-sm font-medium transition-colors",
+                    "block rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                     isActive(item.href)
                       ? "bg-muted text-foreground"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -118,13 +153,13 @@ export function Navbar() {
                   {item.label}
                 </Link>
                 {item.children && (
-                  <div className="ml-4 mt-1 flex flex-col gap-1">
+                  <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-border pl-4">
                     {item.children.map((child) => (
                       <Link
                         key={child.label}
                         to={child.href}
                         onClick={() => setIsOpen(false)}
-                        className="block rounded-md px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+                        className="block rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {child.label}
                       </Link>
@@ -133,7 +168,7 @@ export function Navbar() {
                 )}
               </div>
             ))}
-            <Button variant="hero" className="mt-4" asChild>
+            <Button variant="default" className="mt-4" asChild>
               <Link to="/contact" onClick={() => setIsOpen(false)}>
                 Get in Touch
               </Link>

@@ -10,6 +10,10 @@ import About from "./pages/About";
 import Tools from "./pages/Tools";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import TaxCalculator from "./pages/tools/TaxCalculator";
+import SIPCalculator from "./pages/tools/SIPCalculator";
+import EMICalculator from "./pages/tools/EMICalculator";
+import CompoundInterestCalculator from "./pages/tools/CompoundInterestCalculator";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +29,10 @@ const App = () => (
             <Route path="/blog" element={<Blog />} />
             <Route path="/about" element={<About />} />
             <Route path="/tools" element={<Tools />} />
+            <Route path="/tools/tax-calculator" element={<TaxCalculator />} />
+            <Route path="/tools/sip-calculator" element={<SIPCalculator />} />
+            <Route path="/tools/emi-calculator" element={<EMICalculator />} />
+            <Route path="/tools/compound-interest-calculator" element={<CompoundInterestCalculator />} />
             <Route path="/contact" element={<Contact />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

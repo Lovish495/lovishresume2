@@ -30,7 +30,7 @@ const tools = [
     icon: TrendingUp,
     title: "Compound Interest Calculator",
     description: "See the magic of compounding. Calculate how your investments grow over time.",
-    href: "/tools/compound-interest",
+    href: "/tools/compound-interest-calculator",
     category: "Investing",
   },
   {

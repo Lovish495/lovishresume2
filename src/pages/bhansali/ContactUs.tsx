@@ -12,6 +12,7 @@ import { PageHeader } from "@/components/bhansali/PageHeader";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { locations } from "@/data/bhansali/companyData";
+import { supabase } from "@/integrations/supabase/client";
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -43,8 +44,20 @@ export default function ContactUs() {
   const onSubmit = async (data: ContactForm) => {
     setIsSubmitting(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Save to database
+      const { error } = await supabase
+        .from("contact_submissions")
+        .insert([{
+          name: data.name,
+          email: data.email,
+          phone: data.phone || null,
+          company: data.company || null,
+          subject: data.subject,
+          message: data.message,
+        }]);
+
+      if (error) throw error;
+
       toast({
         title: "Message Sent!",
         description: "Thank you for contacting us. We'll get back to you soon.",

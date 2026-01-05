@@ -23,6 +23,10 @@ import CaseStudy from "./pages/bhansali/CaseStudy";
 import FinancialResult from "./pages/bhansali/FinancialResult";
 import Careers from "./pages/bhansali/Careers";
 import ContactUs from "./pages/bhansali/ContactUs";
+import Auth from "./pages/bhansali/Auth";
+import Admin from "./pages/bhansali/Admin";
+import Blog from "./pages/bhansali/Blog";
+import BlogPost from "./pages/bhansali/BlogPost";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +42,14 @@ const App = () => (
           <Routes>
             {/* Main Pages */}
             <Route path="/" element={<HomePage />} />
+            
+            {/* Auth Pages */}
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<Admin />} />
+            
+            {/* Blog Pages */}
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             
             {/* Company Pages */}
             <Route path="/about-us" element={<AboutUs />} />

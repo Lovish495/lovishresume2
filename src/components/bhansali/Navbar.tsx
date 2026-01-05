@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ChevronDown, Phone } from "lucide-react";
+import { Menu, X, ChevronDown, Phone, LogIn, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   {
@@ -50,6 +51,7 @@ const navItems = [
     ],
   },
   { label: "Careers", href: "/careers" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact-us" },
 ];
 
@@ -58,6 +60,7 @@ export function Navbar() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -161,8 +164,25 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden lg:flex items-center gap-4">
+          {/* CTA Buttons */}
+          <div className="hidden lg:flex items-center gap-3">
+            {user ? (
+              isAdmin && (
+                <Link to="/admin">
+                  <Button variant="outline" size="sm" className="border-primary/50">
+                    <User className="w-4 h-4 mr-2" />
+                    Admin
+                  </Button>
+                </Link>
+              )
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="border-primary/50">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
+            )}
             <Link to="/contact-us">
               <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-primary-foreground font-semibold px-6 shadow-glow-sm hover:shadow-glow transition-all duration-300">
                 <Phone className="w-4 h-4 mr-2" />

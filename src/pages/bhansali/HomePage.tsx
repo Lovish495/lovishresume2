@@ -6,6 +6,7 @@ import { Layout } from "@/components/bhansali/Layout";
 import { FinancialCard } from "@/components/bhansali/FinancialCard";
 import { ProductCard } from "@/components/bhansali/ProductCard";
 import { MoleculeAnimation } from "@/components/bhansali/MoleculeAnimation";
+import { BlogSection } from "@/components/bhansali/BlogSection";
 import { companyData, financialSnapshot } from "@/data/bhansali/companyData";
 import { productsData } from "@/data/bhansali/productsData";
 
@@ -217,6 +218,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Blog Section */}
+      <BlogSection />
 
       {/* CTA Section */}
       <section className="py-20 relative overflow-hidden">

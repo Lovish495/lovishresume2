@@ -168,7 +168,7 @@
 
   /* Product cards */
   .product-card {
-    @apply glass-card p-6 transition-all duration-500 cursor-pointer group;
+    @apply glass-card p-6 transition-all duration-500 cursor-pointer;
   }
 
   .product-card:hover {

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { Layout } from "@/components/bhansali/Layout";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAIInterview } from "@/hooks/useAIInterview";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Play, 
   Send, 
   Mic, 
   MicOff, 
   RotateCcw, 
-  MessageSquare, 
   CheckCircle,
   Loader2,
   Brain,
@@ -62,8 +63,8 @@ export default function AIInterview() {
   const [experience, setExperience] = useState("");
   const [industry, setIndustry] = useState("");
   const [input, setInput] = useState("");
-  const [isRecording, setIsRecording] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
   
   const {
     messages,
@@ -76,9 +77,32 @@ export default function AIInterview() {
     resetInterview,
   } = useAIInterview();
 
+  const handleVoiceResult = useCallback((transcript: string) => {
+    setInput(prev => prev + (prev ? " " : "") + transcript);
+  }, []);
+
+  const { 
+    isListening, 
+    transcript, 
+    isSupported, 
+    toggleListening,
+    stopListening 
+  } = useSpeechRecognition({
+    onResult: handleVoiceResult,
+    continuous: true,
+    language: "en-US",
+  });
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, feedback]);
+
+  // Update input with interim transcript while speaking
+  useEffect(() => {
+    if (isListening && transcript) {
+      // Show interim results in a lighter way
+    }
+  }, [isListening, transcript]);
 
   const handleStart = () => {
     if (role && experience && industry) {
@@ -88,6 +112,9 @@ export default function AIInterview() {
 
   const handleSend = () => {
     if (input.trim() && !isLoading) {
+      if (isListening) {
+        stopListening();
+      }
       sendMessage(input.trim());
       setInput("");
     }
@@ -100,9 +127,16 @@ export default function AIInterview() {
     }
   };
 
-  const toggleRecording = () => {
-    setIsRecording(!isRecording);
-    // Voice recording would be implemented here with Web Speech API
+  const handleVoiceToggle = () => {
+    if (!isSupported) {
+      toast({
+        title: "Voice input not supported",
+        description: "Your browser doesn't support voice input. Please use Chrome or Edge.",
+        variant: "destructive",
+      });
+      return;
+    }
+    toggleListening();
   };
 
   return (
@@ -329,20 +363,32 @@ export default function AIInterview() {
 
                   {/* Input Area */}
                   <div className="p-4 border-t border-slate-700">
+                    {/* Voice indicator */}
+                    {isListening && (
+                      <div className="flex items-center gap-2 mb-3 p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+                        <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+                        <span className="text-sm text-red-400">Listening... Speak now</span>
+                        {transcript && (
+                          <span className="text-sm text-slate-400 ml-2 italic">"{transcript}"</span>
+                        )}
+                      </div>
+                    )}
+                    
                     <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={toggleRecording}
-                        className={isRecording ? "bg-red-500/20 border-red-500" : ""}
+                        onClick={handleVoiceToggle}
+                        className={isListening ? "bg-red-500/20 border-red-500 text-red-400" : ""}
+                        title={isSupported ? (isListening ? "Stop recording" : "Start voice input") : "Voice input not supported"}
                       >
-                        {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                        {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                       </Button>
                       <Textarea
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyPress}
-                        placeholder="Type your response..."
+                        placeholder={isListening ? "Listening... or type here" : "Type or click mic to speak..."}
                         className="min-h-[44px] max-h-32 bg-slate-900 border-slate-600 text-white resize-none"
                         disabled={isLoading}
                       />
@@ -355,7 +401,10 @@ export default function AIInterview() {
                       </Button>
                     </div>
                     <p className="text-xs text-slate-500 mt-2 text-center">
-                      Press Enter to send, Shift+Enter for new line
+                      {isSupported 
+                        ? "Click mic to speak, Enter to send, Shift+Enter for new line"
+                        : "Enter to send, Shift+Enter for new line"
+                      }
                     </p>
                   </div>
                 </CardContent>

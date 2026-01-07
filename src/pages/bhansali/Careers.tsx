@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
-import { Briefcase, MapPin, Clock, GraduationCap, Users, Lightbulb, ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Briefcase, MapPin, Clock, GraduationCap, Users, Lightbulb, ChevronDown, Brain } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/bhansali/Layout";
@@ -36,6 +37,28 @@ export default function Careers() {
         subtitle="Learn. Lead. Innovate. Join our team and shape the future of engineering polymers."
         breadcrumbs={[{ label: "Careers" }]}
       />
+
+      {/* AI Interview CTA */}
+      <section className="py-8 bg-gradient-to-r from-primary/10 to-secondary/10 border-b border-border/50">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center">
+                <Brain className="w-7 h-7 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-display text-lg font-bold text-foreground">Practice with AI Interviewer</h3>
+                <p className="text-sm text-muted-foreground">Get instant feedback and improve your interview skills</p>
+              </div>
+            </div>
+            <Link to="/ai-interview">
+              <Button className="bg-gradient-to-r from-primary to-secondary">
+                Start AI Interview
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Career Highlights */}
       <section className="py-16 border-b border-border/50">

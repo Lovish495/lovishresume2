@@ -27,6 +27,7 @@ import Auth from "./pages/bhansali/Auth";
 import Admin from "./pages/bhansali/Admin";
 import Blog from "./pages/bhansali/Blog";
 import BlogPost from "./pages/bhansali/BlogPost";
+import AIInterview from "./pages/bhansali/AIInterview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -83,6 +84,7 @@ const App = () => (
             {/* Other Pages */}
             <Route path="/careers" element={<Careers />} />
             <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/ai-interview" element={<AIInterview />} />
             
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

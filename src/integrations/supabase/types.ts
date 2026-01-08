@@ -107,6 +107,72 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_sessions: {
+        Row: {
+          communication_score: number | null
+          completed_at: string | null
+          confidence_score: number | null
+          created_at: string
+          duration_seconds: number | null
+          experience: string
+          feedback: string | null
+          id: string
+          improvement_areas: string[] | null
+          industry: string
+          messages: Json
+          overall_score: number | null
+          role: string
+          session_id: string | null
+          started_at: string
+          status: string
+          strengths: string[] | null
+          technical_score: number | null
+          user_id: string | null
+        }
+        Insert: {
+          communication_score?: number | null
+          completed_at?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          duration_seconds?: number | null
+          experience: string
+          feedback?: string | null
+          id?: string
+          improvement_areas?: string[] | null
+          industry: string
+          messages?: Json
+          overall_score?: number | null
+          role: string
+          session_id?: string | null
+          started_at?: string
+          status?: string
+          strengths?: string[] | null
+          technical_score?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          communication_score?: number | null
+          completed_at?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          duration_seconds?: number | null
+          experience?: string
+          feedback?: string | null
+          id?: string
+          improvement_areas?: string[] | null
+          industry?: string
+          messages?: Json
+          overall_score?: number | null
+          role?: string
+          session_id?: string | null
+          started_at?: string
+          status?: string
+          strengths?: string[] | null
+          technical_score?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

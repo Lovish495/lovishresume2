@@ -139,7 +139,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Lovish Singhal. All rights reserved.
+            © {new Date().getFullYear()} Agrawal Tech Developments. All rights reserved. Contact +91-7976769514
           </p>
           <div className="flex gap-6">
             <Link

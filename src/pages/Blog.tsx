@@ -1,88 +1,44 @@
 import { Layout } from "@/components/layout/Layout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Clock, User, Search } from "lucide-react";
+import { Clock, User, Search, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Helmet } from "react-helmet-async";
-
-const allArticles = [
-  {
-    id: 1,
-    title: "Understanding TDS: A Complete Guide for Beginners",
-    description: "Learn about Tax Deducted at Source, its implications, and how to handle TDS in your financial planning.",
-    category: "Taxation",
-    readTime: "8 min read",
-    author: "Lovish Singhal",
-    date: "Dec 10, 2025",
-    image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 2,
-    title: "Bonds vs Fixed Deposits: Which is Right for You?",
-    description: "A comprehensive comparison of bonds and fixed deposits to help you make informed investment decisions.",
-    category: "Bonds",
-    readTime: "6 min read",
-    author: "Lovish Singhal",
-    date: "Dec 8, 2025",
-    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 3,
-    title: "Building Your Emergency Fund: Step by Step",
-    description: "Essential strategies to build a financial safety net that can sustain you during unexpected situations.",
-    category: "Investing",
-    readTime: "5 min read",
-    author: "Lovish Singhal",
-    date: "Dec 5, 2025",
-    image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 4,
-    title: "GST Filing: A Simple Guide for Small Businesses",
-    description: "Everything you need to know about filing GST returns as a small business owner in India.",
-    category: "Taxation",
-    readTime: "10 min read",
-    author: "Lovish Singhal",
-    date: "Dec 3, 2025",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 5,
-    title: "Introduction to Government Securities",
-    description: "Discover the world of G-Secs and how they can be a safe investment option for your portfolio.",
-    category: "Bonds",
-    readTime: "7 min read",
-    author: "Lovish Singhal",
-    date: "Nov 28, 2025",
-    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 6,
-    title: "Understanding Mutual Funds: A Beginner's Guide",
-    description: "Learn the basics of mutual funds and how to start your investment journey with SIPs.",
-    category: "Investing",
-    readTime: "9 min read",
-    author: "Lovish Singhal",
-    date: "Nov 25, 2025",
-    image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&auto=format&fit=crop&q=60",
-  },
-];
-
-const categories = ["All", "Taxation", "Bonds", "Investing"];
-
-const categoryColors: Record<string, string> = {
-  Taxation: "bg-amber-100 text-amber-800",
-  Bonds: "bg-blue-100 text-blue-800",
-  Investing: "bg-emerald-100 text-emerald-800",
-};
+import { useBlogs } from "@/hooks/useBlogs";
+import { allArticles, categoryColors, categories } from "@/data/articlesData";
+import { format } from "date-fns";
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const { data: dbBlogs, isLoading } = useBlogs();
 
-  const filteredArticles = allArticles.filter((article) => {
+  // Combine database blogs with static articles as fallback
+  const allBlogItems = [
+    ...(dbBlogs?.map((blog) => ({
+      id: blog.slug,
+      title: blog.title,
+      description: blog.excerpt || "",
+      category: blog.category,
+      readTime: blog.read_time || "5 min read",
+      author: blog.author_name || "Lovish Singhal",
+      date: blog.published_at ? format(new Date(blog.published_at), "MMM d, yyyy") : format(new Date(blog.created_at), "MMM d, yyyy"),
+      image: blog.cover_image || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=60",
+      isFromDb: true,
+      slug: blog.slug,
+    })) || []),
+    ...allArticles.map((article) => ({
+      ...article,
+      id: String(article.id),
+      isFromDb: false,
+      slug: String(article.id),
+    })),
+  ];
+
+  const filteredArticles = allBlogItems.filter((article) => {
     const matchesCategory = activeCategory === "All" || article.category === activeCategory;
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       article.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -147,10 +103,17 @@ const Blog = () => {
         {/* Articles Grid */}
         <section className="bg-muted py-12 md:py-16">
           <div className="container">
-            {filteredArticles.length > 0 ? (
+            {isLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : filteredArticles.length > 0 ? (
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 {filteredArticles.map((article, index) => (
-                  <Link key={article.id} to={`/blog/${article.id}`}>
+                  <Link 
+                    key={article.id} 
+                    to={article.isFromDb ? `/blog/${article.slug}` : `/blog/${article.id}`}
+                  >
                     <Card 
                       variant="article"
                       className="h-full animate-fade-up opacity-0"
@@ -165,7 +128,7 @@ const Blog = () => {
                       </div>
                       <CardHeader>
                         <div className="mb-2 flex items-center gap-2">
-                          <Badge variant="secondary" className={categoryColors[article.category]}>
+                          <Badge variant="secondary" className={categoryColors[article.category] || "bg-muted text-muted-foreground"}>
                             {article.category}
                           </Badge>
                           <span className="text-xs text-muted-foreground">{article.date}</span>

@@ -5,30 +5,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { ScrollToTop } from "@/components/ScrollToTop";
-
-// BEPL Pages
-import HomePage from "./pages/bhansali/HomePage";
-import AboutUs from "./pages/bhansali/AboutUs";
-import HistoryMilestone from "./pages/bhansali/HistoryMilestone";
-import OurDirector from "./pages/bhansali/OurDirector";
-import GrowthThroughInnovation from "./pages/bhansali/GrowthThroughInnovation";
-import CSRActivity from "./pages/bhansali/CSRActivity";
-import Sustainability from "./pages/bhansali/Sustainability";
-import Products from "./pages/bhansali/Products";
-import ProductDetails from "./pages/bhansali/ProductDetails";
-import ProductFinder from "./pages/bhansali/ProductFinder";
-import Applications from "./pages/bhansali/Applications";
-import ResearchDevelopment from "./pages/bhansali/ResearchDevelopment";
-import CaseStudy from "./pages/bhansali/CaseStudy";
-import FinancialResult from "./pages/bhansali/FinancialResult";
-import Careers from "./pages/bhansali/Careers";
-import ContactUs from "./pages/bhansali/ContactUs";
-import Auth from "./pages/bhansali/Auth";
-import Admin from "./pages/bhansali/Admin";
-import Blog from "./pages/bhansali/Blog";
-import BlogPost from "./pages/bhansali/BlogPost";
-import AIInterview from "./pages/bhansali/AIInterview";
+import Index from "./pages/Index";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import About from "./pages/About";
+import Tools from "./pages/Tools";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import TaxCalculator from "./pages/tools/TaxCalculator";
+import SIPCalculator from "./pages/tools/SIPCalculator";
+import EMICalculator from "./pages/tools/EMICalculator";
+import CompoundInterestCalculator from "./pages/tools/CompoundInterestCalculator";
 
 const queryClient = new QueryClient();
 
@@ -41,52 +28,17 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            {/* Main Pages */}
-            <Route path="/" element={<HomePage />} />
-            
-            {/* Auth Pages */}
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
-            
-            {/* Blog Pages */}
+            <Route path="/" element={<Index />} />
             <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            
-            {/* Company Pages */}
-            <Route path="/about-us" element={<AboutUs />} />
-            <Route path="/history-milestone" element={<HistoryMilestone />} />
-            <Route path="/our-director" element={<OurDirector />} />
-            <Route path="/growth-through-innovation" element={<GrowthThroughInnovation />} />
-            <Route path="/csr-activity" element={<CSRActivity />} />
-            <Route path="/sustainability" element={<Sustainability />} />
-            
-            {/* Product Pages */}
-            <Route path="/products" element={<Products />} />
-            <Route path="/product-details/:category" element={<ProductDetails />} />
-            <Route path="/product-finder" element={<ProductFinder />} />
-            <Route path="/applications" element={<Applications />} />
-            
-            {/* R&D Pages */}
-            <Route path="/research-development" element={<ResearchDevelopment />} />
-            <Route path="/research-development-projects" element={<ResearchDevelopment />} />
-            <Route path="/research-development-technology" element={<ResearchDevelopment />} />
-            <Route path="/case-study" element={<CaseStudy />} />
-            
-            {/* Investor Pages */}
-            <Route path="/financial-result" element={<FinancialResult />} />
-            <Route path="/stock-exchange-intimations" element={<FinancialResult />} />
-            <Route path="/policies" element={<FinancialResult />} />
-            <Route path="/disclosure" element={<FinancialResult />} />
-            <Route path="/annual-reports" element={<FinancialResult />} />
-            <Route path="/unclaimed-dividends" element={<FinancialResult />} />
-            <Route path="/investorcontact" element={<ContactUs />} />
-            
-            {/* Other Pages */}
-            <Route path="/careers" element={<Careers />} />
-            <Route path="/contact-us" element={<ContactUs />} />
-            <Route path="/ai-interview" element={<AIInterview />} />
-            
-            {/* Catch-all */}
+            <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/tools" element={<Tools />} />
+            <Route path="/tools/tax-calculator" element={<TaxCalculator />} />
+            <Route path="/tools/sip-calculator" element={<SIPCalculator />} />
+            <Route path="/tools/emi-calculator" element={<EMICalculator />} />
+            <Route path="/tools/compound-interest-calculator" element={<CompoundInterestCalculator />} />
+            <Route path="/contact" element={<Contact />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

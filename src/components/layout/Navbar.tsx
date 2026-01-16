@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -109,8 +110,9 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* CTA Button - Desktop */}
-        <div className="hidden lg:block">
+        {/* Theme Toggle + CTA Button - Desktop */}
+        <div className="hidden items-center gap-2 lg:flex">
+          <ThemeToggle variant={scrolled ? "default" : "hero"} />
           <Button 
             variant={scrolled ? "default" : "heroOutline"} 
             size="sm" 
@@ -168,11 +170,14 @@ export function Navbar() {
                 )}
               </div>
             ))}
-            <Button variant="default" className="mt-4" asChild>
-              <Link to="/contact" onClick={() => setIsOpen(false)}>
-                Get in Touch
-              </Link>
-            </Button>
+            <div className="mt-4 flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="default" className="flex-1" asChild>
+                <Link to="/contact" onClick={() => setIsOpen(false)}>
+                  Get in Touch
+                </Link>
+              </Button>
+            </div>
           </nav>
         </div>
       )}

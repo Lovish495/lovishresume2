@@ -2,21 +2,82 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link, useParams, Navigate } from "react-router-dom";
-import { ArrowLeft, Clock, User, Calendar, Share2 } from "lucide-react";
+import { ArrowLeft, Clock, User, Calendar, Share2, Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { useBlog, useBlogs } from "@/hooks/useBlogs";
 import { allArticles, categoryColors } from "@/data/articlesData";
+import { format } from "date-fns";
 
 const BlogPost = () => {
-  const { id } = useParams();
-  const article = allArticles.find((a) => a.id === Number(id));
+  const { slug } = useParams();
+  
+  // Try to fetch from database first
+  const { data: dbBlog, isLoading: dbLoading, error: dbError } = useBlog(slug || "");
+  const { data: dbBlogs } = useBlogs();
+  
+  // Check if it's a static article (numeric ID)
+  const isNumericId = /^\d+$/.test(slug || "");
+  const staticArticle = isNumericId ? allArticles.find((a) => a.id === Number(slug)) : null;
 
+  // Determine which article to show
+  const article = dbBlog ? {
+    id: dbBlog.id,
+    slug: dbBlog.slug,
+    title: dbBlog.title,
+    description: dbBlog.excerpt || "",
+    content: dbBlog.content,
+    category: dbBlog.category,
+    readTime: dbBlog.read_time || "5 min read",
+    author: dbBlog.author_name || "Lovish Singhal",
+    date: dbBlog.published_at ? format(new Date(dbBlog.published_at), "MMM d, yyyy") : format(new Date(dbBlog.created_at), "MMM d, yyyy"),
+    image: dbBlog.cover_image || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=60",
+    isFromDb: true,
+  } : staticArticle ? {
+    ...staticArticle,
+    slug: String(staticArticle.id),
+    isFromDb: false,
+  } : null;
+
+  // Loading state
+  if (dbLoading && !isNumericId) {
+    return (
+      <Layout>
+        <div className="flex min-h-[50vh] items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
+
+  // Not found
   if (!article) {
     return <Navigate to="/blog" replace />;
   }
 
-  const relatedArticles = allArticles
-    .filter((a) => a.category === article.category && a.id !== article.id)
-    .slice(0, 2);
+  // Get related articles
+  const relatedArticles = [
+    ...(dbBlogs?.filter((b) => b.category === article.category && b.slug !== article.slug).slice(0, 2).map((b) => ({
+      id: b.slug,
+      slug: b.slug,
+      title: b.title,
+      category: b.category,
+      readTime: b.read_time || "5 min read",
+      image: b.cover_image || "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&auto=format&fit=crop&q=60",
+      isFromDb: true,
+    })) || []),
+    ...allArticles
+      .filter((a) => a.category === article.category && String(a.id) !== article.slug)
+      .slice(0, 2 - (dbBlogs?.filter((b) => b.category === article.category && b.slug !== article.slug).length || 0))
+      .map((a) => ({
+        id: String(a.id),
+        slug: String(a.id),
+        title: a.title,
+        category: a.category,
+        readTime: a.readTime,
+        image: a.image,
+        isFromDb: false,
+      })),
+  ].slice(0, 2);
 
   return (
     <>
@@ -36,7 +97,7 @@ const BlogPost = () => {
             </Link>
             
             <div className="max-w-3xl">
-              <Badge variant="secondary" className={`${categoryColors[article.category]} mb-4`}>
+              <Badge variant="secondary" className={`${categoryColors[article.category] || "bg-muted text-muted-foreground"} mb-4`}>
                 {article.category}
               </Badge>
               <h1 className="font-heading text-3xl font-bold text-primary-foreground md:text-4xl lg:text-5xl">
@@ -130,7 +191,7 @@ const BlogPost = () => {
               </h2>
               <div className="grid gap-6 md:grid-cols-2">
                 {relatedArticles.map((related) => (
-                  <Link key={related.id} to={`/blog/${related.id}`} className="group">
+                  <Link key={related.id} to={`/blog/${related.slug}`} className="group">
                     <div className="flex gap-4 rounded-lg bg-background p-4 transition-shadow hover:shadow-md">
                       <img
                         src={related.image}
@@ -138,7 +199,7 @@ const BlogPost = () => {
                         className="h-24 w-24 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <Badge variant="secondary" className={`${categoryColors[related.category]} mb-2`}>
+                        <Badge variant="secondary" className={`${categoryColors[related.category] || "bg-muted text-muted-foreground"} mb-2`}>
                           {related.category}
                         </Badge>
                         <h3 className="font-semibold text-foreground transition-colors group-hover:text-secondary">
